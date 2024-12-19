@@ -3,7 +3,9 @@ import Grid from '@mui/material/Grid2';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { FormControl, Divider, RadioGroup, Typography, FormControlLabel, Radio } from '@mui/material';
+import MenuCard from './ManuCard'
 
+const menu=[1,1,1,1,1,1]
 
 const categories=[
     "pizza",
@@ -113,7 +115,7 @@ const RestaurantDetails = () => {
             
             
             <div className='space-y-5 lg:w-[80%] lg:pl-10'>
-                menu
+                {menu.map((item)=><MenuCard/>)}
             </div>
         </section>
     </div>
