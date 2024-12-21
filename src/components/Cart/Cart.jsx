@@ -90,7 +90,7 @@ const Cart = () => {
                                 <AddLocationAltIcon/>
                                 <div className='space-y-3 text-gray-500'>
                                     <h1 className='font-semibold text-lg'>Add New Address</h1>
-                                    <Button variant="outlined" fullWidth onClick={handleOpenAddressModel}>Add</Button>
+                                    <Button variant="contained" fullWidth onClick={handleOpenAddressModel}>Add</Button>
                                 </div>
                             </Card>
                         </div>
@@ -99,7 +99,7 @@ const Cart = () => {
                 </section>
             </main>
 
-            {/* whenever user click on add anew address then this modal will open */}
+            {/* whenever user click on add a new address then this modal will open */}
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -107,7 +107,7 @@ const Cart = () => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    {/* install formik using "npm install formik yupp" and npm install yup" */}
+                    {/* install formik using "npm install formik yupp" and npm install yup"... formik is form creation and yup is for form validation*/}
                     {/* this helps to use built forms in react */}
                     <Formik initialValues={initialValues}
                     // validationSchema={validationSchema}
