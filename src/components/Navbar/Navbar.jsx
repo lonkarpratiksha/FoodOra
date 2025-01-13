@@ -3,9 +3,12 @@ import React from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Avatar from '@mui/material/Avatar'
+import PersonIcon from '@mui/icons-material/Person';
 import './Navbar.css'
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+    const navigate=useNavigate();
   return (
     <div className='sticky top-0 px-5 z-50 py-[.8rem] bg-[#e91e63] lg:px-20 flex justify-between items-center'>
         <div className='lg:mr-10 cursor-pointer flex items-center space-x-4'>
@@ -21,7 +24,7 @@ const Navbar = () => {
                 </IconButton>
             </div>
             <div>
-                <Avatar sx={{bgcolor:"white",color:"#e91e63"}}>P</Avatar>
+                {false? <Avatar sx={{bgcolor:"white",color:"#e91e63"}}>P</Avatar>:<IconButton onClick={()=>navigate("/account/login")}><PersonIcon/></IconButton>}
             </div>
             <div className=''>
                 <IconButton>
