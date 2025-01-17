@@ -6,13 +6,25 @@ import Avatar from '@mui/material/Avatar'
 import PersonIcon from '@mui/icons-material/Person';
 import './Navbar.css'
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+    const {auth}= useSelector(store=>store)
     const navigate=useNavigate();
+
+    const handleAvatarClick=()=>{
+        if(auth.user?.role==="ROLE_CUSTOMER"){
+            navigate("/my-profile");
+        }
+        else{
+            navigate("/admin/restaurant")
+        }
+    }
+
   return (
     <div className='sticky top-0 px-5 z-50 py-[.8rem] bg-[#e91e63] lg:px-20 flex justify-between items-center'>
         <div className='lg:mr-10 cursor-pointer flex items-center space-x-4'>
-            <li className='logo font-semibold text-gray-300 text-2xl'>
+            <li onClick={()=>navigate("/")} className='logo font-semibold text-gray-300 text-2xl'>
                 FoodOra
             </li>
         </div>
@@ -24,7 +36,12 @@ const Navbar = () => {
                 </IconButton>
             </div>
             <div>
-                {false? <Avatar sx={{bgcolor:"white",color:"#e91e63"}}>P</Avatar>:<IconButton onClick={()=>navigate("/account/login")}><PersonIcon/></IconButton>}
+                {auth.user? 
+                (<Avatar onClick={handleAvatarClick} sx={{bgcolor:"white",color:"#e91e63"}}>
+                    {auth.user?.fullName[0].toUpperCase()}
+                </Avatar>
+                ):
+                (<IconButton onClick={()=>navigate("/account/login")}><PersonIcon/></IconButton>)}
             </div>
             <div className=''>
                 <IconButton>
