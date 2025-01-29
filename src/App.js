@@ -11,6 +11,8 @@ import CustomerRouter from './Routers/CustomerRouter';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from './components/State/Authentication/Action';
+import { findCart } from './components/State/Cart/Action';
+
 
 function App() {
   const dispatch=useDispatch();
@@ -20,6 +22,7 @@ function App() {
   
   useEffect(()=>{
     dispatch(getUser(auth.jwt ||jwt))
+    dispatch(findCart(jwt))
   },[auth.jwt])
   
   return (

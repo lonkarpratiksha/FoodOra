@@ -1,33 +1,60 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid2';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { FormControl, Divider, RadioGroup, Typography, FormControlLabel, Radio } from '@mui/material';
 import MenuCard from './ManuCard'
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getRestaurantById, getRestaurantCategory } from '../State/Restaurant/Action';
+import { getMenuItemByRestaurantId } from '../State/Menu/Action';
 
-const menu=[1,1,1,1,1,1]
+// const menu=[1,1,1,1,1,1]
 
-const categories=[
-    "pizza",
-    "biryani",
-    "burger",
-    "chicken",
-    "rice"
-]
 
 const foodTypes=[
     {label:"All", value:"all"},
-    {label:"Vegetarian only", value:"vegeterian"},
-    {label:"Non-Vegetarian", value:"non_vegitarian"},
+    {label:"Vegetarian only", value:"vegetarian"},
+    {label:"Non-Vegetarian", value:"nonvegetarian"},
     {label:"Seasonal", value:"seasonal"}
 ]
 
 
 const RestaurantDetails = () => {
-    const [foodType,setFoodType]=useState("all")
+    const [foodType,setFoodType]=useState("all");
+    const navigate= useNavigate();
+    const dispatch=useDispatch();
+    const jwt= localStorage.getItem("jwt");
+    const {auth,restaurant,menu}=useSelector(store=>store);
+    const[selectedCategory, setSelectedCategory]=useState("");
+
+    const {id,city} = useParams();
+
     const handleFilter=(e)=>{
+        setFoodType(e.target.value)
         console.log(e.target.value, e.target.name)
     }
+
+    const handleFilterCategory=(e,value)=>{
+        setSelectedCategory(value)
+        console.log(e.target.value, e.target.name,value)
+    }
+
+    console.log("restaurantdetails:- ",restaurant);
+    
+    useEffect(()=>{
+        dispatch(getRestaurantById({ jwt, restaurantId: id }))
+        dispatch(getRestaurantCategory({jwt,restaurantId:id}))
+    },[]);
+
+    useEffect(()=>{
+        dispatch(getMenuItemByRestaurantId({
+            jwt,restaurantId:id,
+            vegetarian:foodType==="vegetarian",
+            seasonal:foodType==="seasonal",
+            nonveg:foodType==="nonvegetarian",
+            foodCategory:selectedCategory}))
+    },[selectedCategory,foodType]);
 
   return (
     <div className='px-5 lg:px-20'>
@@ -37,11 +64,11 @@ const RestaurantDetails = () => {
             <div>
                 <Grid container spacing={2}>
                     <Grid size={12}>
-                        <img className='w-full h-[40vh] object-cover' src="https://cdn.pixabay.com/photo/2020/09/17/12/41/cafe-5579069_1280.jpg" alt="" />
+                        <img className='w-full h-[40vh] object-cover' src={restaurant.restaurant?.images[0]} alt="" />
                     </Grid>
 
                     <Grid size={{xs:12,md:6}} >
-                        <img className='w-full h-40vh object-cover' src="https://cdn.pixabay.com/photo/2015/06/30/18/36/st-826688_1280.jpg" alt="" />
+                        <img className='w-full h-40vh object-cover' src={restaurant.restaurant?.images[1]} alt="" />
                     </Grid>
                     <Grid size={{xs:12,md:6}} >
                         <img className='w-full h-40vh object-cover' src="https://cdn.pixabay.com/photo/2019/06/25/13/59/city-4298285_1280.jpg" alt="" />
@@ -49,9 +76,9 @@ const RestaurantDetails = () => {
                 </Grid>
             </div>
             <div className='pt-3 pb-5'>
-                <h1 className='text-4xl font-semibold'>Indian Fast Food</h1>
+                <h1 className='text-4xl font-semibold'>{restaurant.restaurant?.name}</h1>
 
-                <p className='text-gray-500 mt-1'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt veritatis accusamus eius similique autem odio minima, doloremque soluta animi tempore a earum facere, commodi quisquam magni quos dicta! Ea, quia?</p>
+                <p className='text-gray-500 mt-1'>{restaurant.restaurant?.description}</p>
 
                 <div className='space-y-3 mt-3'>
                     <p className='text-gray-500 flex items-center gap-3'>
@@ -79,7 +106,7 @@ const RestaurantDetails = () => {
                             Food Type
                         </Typography>
                         <FormControl className='py-10 space-y-5' component={"fieldset"}>
-                            <RadioGroup onChange={handleFilter} name="food_type" value={foodType}>
+                            <RadioGroup onChange={handleFilter} name="food_" value={foodType}>
                                 {foodTypes.map((item)=>(
                                 <FormControlLabel 
                                 key={item.value}
@@ -99,13 +126,13 @@ const RestaurantDetails = () => {
                             Food Category
                         </Typography>
                         <FormControl className='py-10 space-y-5' component={"fieldset"}>
-                            <RadioGroup onChange={handleFilter} name="food_type" value={foodType}>
-                                {categories.map((item)=>(
+                            <RadioGroup onChange={handleFilterCategory} name="food_category" value={selectedCategory}>
+                                {restaurant.categories.map((item)=>(
                                 <FormControlLabel 
                                 key={item}
-                                value={item} 
+                                value={item.name} 
                                 control={<Radio/>} 
-                                label={item}/>
+                                label={item.name}/>
                                 ))}
                             </RadioGroup>
                         </FormControl>
@@ -115,7 +142,7 @@ const RestaurantDetails = () => {
             
             
             <div className='space-y-5 lg:w-[80%] lg:pl-10'>
-                {menu.map((item)=><MenuCard/>)}
+                {menu.menuItems.map((item)=><MenuCard item={item}/>)}
             </div>
         </section>
     </div>
